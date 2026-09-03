@@ -1,0 +1,28 @@
+[workspace]
+resolver = "2"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[package]
+name = "edge-infer"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[features]
+default = []
+# 各后端独立开关：只编目标平台需要的那个，避免链接不存在的库。
+litert = []
+# 裸 Core ML：编 coreml_shim.m，链 CoreML/Foundation 两个系统框架。
+coreml = []
+
+[dependencies]
+
+[build-dependencies]
+cc = "1"
+
