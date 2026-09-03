@@ -85,3 +85,17 @@ hand-track ──┐
 | [air_calculator-rs](../air_calculator-rs) | 手写识别核心与 C ABI |
 
 path 依赖指向兄弟目录，几个仓需要并排 checkout。
+
+## License
+
+Apache License 2.0 — see `LICENSE` and `NOTICE`.
+
+The code is free to use, modify, redistribute and commercialize, including
+publishing derivative applications on the App Store, Google Play or anywhere
+else. Per section 6 of the Apache License 2.0, no trademark or product name
+rights are granted: **Air Calculator**, **AirCalculator**, `air_calculator` as
+a product name, and the application icons and logos in this repository are
+reserved, and may not be used to publish or promote a derivative work without
+prior written permission. Fork it, but ship it under your own name. Factual
+references such as "based on Air Calculator" are fine, as long as they do not
+suggest endorsement.
