@@ -484,9 +484,9 @@ impl CompiledModel {
         };
         unsafe { LiteRtSetOptionsHardwareAccelerators(options, hw) };
 
-        // 线程数两档都要设。GPU 是 partial offload：encoder 790 个算子里只有
-        // 一百多个上 GPU，其余仍由 XNNPACK 在 CPU 上跑，漏设就是让那六百多个
-        // 算子单线程执行——曾据此错误地得出「encoder 上 GPU 更慢」的结论。
+        // 线程数两档都要设。GPU 是 partial offload：encoder 只有一部分算子
+        // 上 GPU，其余仍由 XNNPACK 在 CPU 上跑，漏设就是让剩下那些算子单线程
+        // 执行——曾据此错误地得出「encoder 上 GPU 更慢」的结论。
         set_cpu_num_threads(options, num_threads);
 
         let mut compiled: LiteRtCompiledModel = ptr::null_mut();

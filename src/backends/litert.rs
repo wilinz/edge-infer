@@ -70,7 +70,9 @@ impl LiteRtCompiledEngine {
         let enc_path = dir.join("prefix_enc.tflite");
         let enc_bytes = std::fs::read(&enc_path)
             .map_err(|e| EngineError::Load(format!("{}: {e}", enc_path.display())))?;
-        // encoder 走 GPU partial offload（146/790），把大核让给 decoder。
+        // encoder 走 GPU partial offload：算子接不了的那部分退回 CPU。
+        // 具体比例随导出的图和 LiteRT 版本变，别在注释里写死一个数——
+        // 这里原先记的 146/790 早就对不上了。
         models.push(
             sys::CompiledModel::from_owned(enc_bytes, true, cfg.num_threads)
                 .map_err(EngineError::Load)?,
