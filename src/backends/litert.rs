@@ -70,9 +70,10 @@ impl LiteRtCompiledEngine {
         let enc_path = dir.join("prefix_enc.tflite");
         let enc_bytes = std::fs::read(&enc_path)
             .map_err(|e| EngineError::Load(format!("{}: {e}", enc_path.display())))?;
-        // encoder 走 GPU partial offload：算子接不了的那部分退回 CPU。
-        // 具体比例随导出的图和 LiteRT 版本变，别在注释里写死一个数——
-        // 这里原先记的 146/790 早就对不上了。
+        // 识别的三个子图现在都整图下沉到 GPU（各 1 个分区，零算子留在
+        // CPU）。走到这一步是导出侧改出来的：KV cache 拆成逐层独立张量消掉
+        // 了 48 个 GPU 接不了的 SLICE，encoder 的 BOOL 路径也绕掉了。
+        // 具体算子数随导出的图和运行时版本变，别在注释里写死。
         models.push(
             sys::CompiledModel::from_owned(enc_bytes, true, cfg.num_threads)
                 .map_err(EngineError::Load)?,

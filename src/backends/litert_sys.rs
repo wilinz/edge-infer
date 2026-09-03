@@ -484,9 +484,10 @@ impl CompiledModel {
         };
         unsafe { LiteRtSetOptionsHardwareAccelerators(options, hw) };
 
-        // 线程数两档都要设。GPU 是 partial offload：encoder 只有一部分算子
-        // 上 GPU，其余仍由 XNNPACK 在 CPU 上跑，漏设就是让剩下那些算子单线程
-        // 执行——曾据此错误地得出「encoder 上 GPU 更慢」的结论。
+        // 线程数两档都要设。GPU 那档并不保证整图下沉：加速器接不了的算子会
+        // 留在 XNNPACK 上，漏设就是让它们单线程执行——当年正是据此错误地得出
+        // 「encoder 上 GPU 更慢」的结论。现在识别的三个子图都能整图下沉，但
+        // 这只是导出侧当前的状态，改图就可能退回部分下沉。
         set_cpu_num_threads(options, num_threads);
 
         let mut compiled: LiteRtCompiledModel = ptr::null_mut();
