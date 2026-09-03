@@ -2,6 +2,16 @@
 
 端侧推理抽象层。上层只依赖 `Engine` trait，不关心底下是 LiteRT 还是 Core ML。
 
+本项目分为五个仓库，需要**并排 checkout**——Rust 侧是 path 依赖。
+
+| 仓库 | 职责 |
+|---|---|
+| [air_calculator](https://github.com/wilinz/air_calculator) | Flutter 客户端：UI、相机接入、手势交互与三端集成 |
+| [air_calculator-rs](https://github.com/wilinz/air_calculator-rs) | Rust 核心：识别解码循环、LaTeX 求值与 C ABI |
+| [hand-track](https://github.com/wilinz/hand-track) | 手部检测：palm + landmark 两段式流水线与两端权重 |
+| **edge-infer** ← 本仓 | 推理抽象：`Engine` trait + LiteRT / Core ML 后端 |
+| [air_calculator_py](https://github.com/wilinz/air_calculator_py) | 模型训练、合成数据生成与端侧导出 |
+
 ## 结构
 
 ```
@@ -79,12 +89,9 @@ hand-track ──┐
 
 ## 上游
 
-| 仓 | 关系 |
-|---|---|
-| [hand-track](https://github.com/wilinz/hand-track) | 手部检测流水线 |
-| [air_calculator-rs](https://github.com/wilinz/air_calculator-rs) | 手写识别核心与 C ABI |
-
-path 依赖指向兄弟目录，几个仓需要并排 checkout。
+[hand-track](https://github.com/wilinz/hand-track) 与
+[air_calculator-rs](https://github.com/wilinz/air_calculator-rs) 都以 path 依赖
+指向本仓所在的兄弟目录。
 
 ## License
 
