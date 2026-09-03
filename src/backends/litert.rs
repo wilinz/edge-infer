@@ -60,8 +60,8 @@ impl LiteRtCompiledEngine {
 
     /// 从目录打开识别那套模型。
     ///
-    /// 识别整体落 XNNPACK（decoder 上 GPU 能接的算子不到一成，跨边界同步反
-    /// 而更慢），所以这里不要 GPU——GPU 留给手部检测那条独立的流水线。
+    /// encoder 与 decoder 都请求 GPU 加速器（Android 上即 OpenCL），接不了的
+    /// 算子由 CPU 兜底。手部检测那条流水线单独走 [`Self::open_bytes`]。
     pub fn open(cfg: &EngineConfig) -> Result<Self> {
         let dir = Path::new(&cfg.model_dir);
         let mut models = Vec::with_capacity(2);
@@ -100,9 +100,13 @@ impl LiteRtCompiledEngine {
         };
         routes.insert(Method::Prefill, (1usize, find(&dec, "prefill")?));
         routes.insert(Method::Step, (1usize, find(&dec, "decode")?));
+        // 如实上报，别写死。这里曾经硬编码 false，于是 backend_name() 一律
+        // 说自己是 litert-xnnpack，基准页把这个名字写进报告文件名，导致
+        // 「识别跑在 CPU 上」的结论以讹传讹。
+        let on_gpu = models[0].on_gpu || dec.on_gpu;
         models.push(dec);
 
-        Ok(Self { models, routes, feedback: HashMap::new(), pipes: Vec::new(), ran: Default::default(), on_gpu: false })
+        Ok(Self { models, routes, feedback: HashMap::new(), pipes: Vec::new(), ran: Default::default(), on_gpu })
     }
 }
 
