@@ -81,8 +81,8 @@ hand-track ──┐
 
 | 仓 | 关系 |
 |---|---|
-| [hand-track](../hand-track) | 手部检测流水线 |
-| [air_calculator-rs](../air_calculator-rs) | 手写识别核心与 C ABI |
+| [hand-track](https://github.com/wilinz/hand-track) | 手部检测流水线 |
+| [air_calculator-rs](https://github.com/wilinz/air_calculator-rs) | 手写识别核心与 C ABI |
 
 path 依赖指向兄弟目录，几个仓需要并排 checkout。
 
